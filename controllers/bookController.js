@@ -23,8 +23,14 @@ exports.findBook = async (req, res) => {
 
   try {
     const book = await models.book.findOne(query);
-    return res.status(200).json({
-      books: book,
+    if (book) {
+      return res.status(200).json({
+        books: book,
+      });
+    }
+    return res.status(500).json({
+      code: 304,
+      message: 'Book wasnt found',
     });
   } catch (err) {
     return res.status(500).json({
