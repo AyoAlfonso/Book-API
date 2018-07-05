@@ -1,0 +1,38 @@
+{
+  "name": "Bookworm",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node start.js"
+  },
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "body-parser": "~1.15.1",
+    "cookie-parser": "~1.4.3",
+    "date-and-time": "^0.6.2",
+    "debug": "~2.2.0",
+    "dotenv": "^6.0.0",
+    "ejs": "^2.5.2",
+    "express": "~4.13.4",
+    "jsonwebtoken": "^8.2.2",
+    "lodash": "^4.17.10",
+    "morgan": "~1.7.0",
+    "mysql": "^2.15.0",
+    "npm": "^3.10.7",
+    "sequelize": "^3.24.0",
+    "shortid-36": "^0.1.2"
+  },
+  "devDependencies": {
+    "apidoc": "^0.17.6",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^13.0.0",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-security": "^1.4.0",
+    "mocha": "^4.1.0"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  }
+}
