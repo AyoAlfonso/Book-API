@@ -28,7 +28,7 @@ exports.findBook = async (req, res) => {
         books: book,
       });
     }
-    return res.status(500).json({
+    return res.status(304).json({
       code: 304,
       message: 'Book wasnt found',
     });
@@ -52,7 +52,7 @@ exports.listBooks =  (req, res) => {
   let rating = req.query.rating || 0; /** Default rating is  */
   rating = Math.ceil(rating);
 
-  if (rating > 10 || rating < 1) {
+  if (rating > 10 || rating < 0) {
     return res.status(400).json({
       message: 'Please input ratings between 1 and 10',
       code: 400,
@@ -85,7 +85,7 @@ exports.listBooks =  (req, res) => {
               name: review.name,
             });
           }),
-          reviewAverage: book.reviews.length === 0 ? 'Not Reviewed Yet' : getMeanAverage(weightedArray),
+          reviewAverage: book.reviews.length === 0 ? 0 : getMeanAverage(weightedArray),
         });
 
         function getMeanAverage(weightedArray) {
@@ -106,7 +106,7 @@ exports.listBooks =  (req, res) => {
       });
       return res.status(200).json({
         code: 200,
-        books: books,
+        books,
       });
     } catch (err) {
       return res.status(500).json({
