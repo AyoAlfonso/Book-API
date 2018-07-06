@@ -1,11 +1,8 @@
-'use strict'
+
 
 const shortid = require('shortid-36');
-const Promise = require('bluebird');
 const models = require('../models');
 const errorResolver = require('../handlers/errorHandlers');
-const weightedMean = require('../handlers/ratings');
-
 
 /**
  * @description Returns a book by its ID
@@ -48,10 +45,9 @@ exports.findBook = async (req, res) => {
 /* USING A PROMISE/COROUTINE PATTERN HERE INSTEAD OF AN ASYNC.
 */
 
-exports.listBooks =  (req, res) => {
-  let rating = req.query.rating || 0; /** Default rating is  */
+exports.listBooks = async (req, res) => {
+  let rating = req.query.rating || 0; /** Default rating is 0 */
   rating = Math.ceil(rating);
-
   if (rating > 10 || rating < 0) {
     return res.status(400).json({
       message: 'Please input ratings between 1 and 10',
@@ -59,62 +55,57 @@ exports.listBooks =  (req, res) => {
     });
   }
 
-  Promise.coroutine(function* () {
-    const query = {
-      include: [{
-        model: models.review,
-      }],
-    };
+  const query = {
+    include: [{
+      model: models.review,
+    }],
+  };
+  try {
+    let books = await models.book.findAll(query);
+    books = books.map((book) => {
+      const weightedArray = [];
+      return Object.assign({}, {
+        id: book.id,
+        name: book.name,
+        description: book.description,
+        price: book.price,
+        reviews: book.reviews.map((review) => {
+          weightedArray.push(review.rating);
+          return Object.assign({}, {
+            id: review.id,
+            book_id: review.book_id,
+            review: review.review,
+            rating: review.rating,
+            name: review.name,
+          });
+        }),
+        reviewAverage: book.reviews.length === 0 ? 0 : getMeanAverage(weightedArray),
+      });
 
-    try {
-      const books = yield models.book.findAll(query);
-      books = books.map((book) => {
-        const weightedArray = [];
-        return Object.assign({}, {
-          id: book.id,
-          name: book.name,
-          description: book.description,
-          price: book.price,
-          reviews: book.reviews.map((review) => {
-            weightedArray.push(review.rating);
-            return Object.assign({}, {
-              id: review.id,
-              book_id: review.book_id,
-              review: review.review,
-              rating: review.rating,
-              name: review.name,
-            });
-          }),
-          reviewAverage: book.reviews.length === 0 ? 0 : getMeanAverage(weightedArray),
+      function getMeanAverage(weightedArray) {
+        let weightedValue = 0;
+        weightedArray.forEach((e) => {
+          weightedValue += e;
         });
+        return (weightedValue / weightedArray.length).toPrecision(2);
+      }
+    });
 
-        function getMeanAverage(weightedArray) {
-          let weightedValue = 0;
-          for (let i = 0; i < weightedArray.length; i + 1) {
-            const weight = weightedMean.findWeightedMean(weightedArray[i]);
-            weightedValue += weightedArray[i] * weight;
-          }
-          const i = (weightedValue / weightedArray.length).toPrecision(2);
-          return (i);
-        }
-      });
-
-      books = books.map((book) => {
-        if (book.reviewAverage >= rating) {
-          return book;
-        }
-      });
-      return res.status(200).json({
-        code: 200,
-        books,
-      });
-    } catch (err) {
-      return res.status(500).json({
-        code: 500,
-        error: errorResolver.resolve(err),
-      });
-    }
-  })();
+    books = books.map((book) => {
+      if (book.reviewAverage >= rating) {
+        return book;
+      }
+    });
+    return res.status(200).json({
+      code: 200,
+      books,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      code: 500,
+      error: errorResolver.resolve(err),
+    });
+  }
 };
 
 /**
