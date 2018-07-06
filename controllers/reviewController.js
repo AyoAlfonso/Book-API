@@ -31,13 +31,13 @@ exports.rateBook = async (req, res) => {
       const bookReviewed = await models.review.create(query);
       if (bookReviewed) {
         return res.status(200).json({
-          message: `The book ${bookId} has been reviewd`,
+          message: `The book ${bookId} has been reviewed`,
           code: 200,
         });
       }
     }
-    return res.status(400).json({
-      code: 400,
+    return res.status(304).json({
+      code: 304,
       error: 'The book was not found',
     });
   } catch (err) {
