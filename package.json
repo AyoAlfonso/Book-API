@@ -14,7 +14,6 @@
     "dotenv": "^6.0.0",
     "ejs": "^2.5.2",
     "express": "~4.13.4",
-    "jsonwebtoken": "^8.2.2",
     "lodash": "^4.17.10",
     "morgan": "~1.7.0",
     "mysql": "^2.15.0",

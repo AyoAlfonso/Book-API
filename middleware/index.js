@@ -6,14 +6,13 @@ const router = express.Router();
 router.use('/', (req, res, next) => {
   console.log('Running base middleware...');
   const callingPath = req.path;
-  const correctHeaders = req.get('Token') == process.env.REQUEST_HEADER_TOKEN &&
-        req.get('Key') === process.env.REQUEST_HEADER_KEY;
+  const correctHeader = req.get('api_key') == process.env.REQUEST_HEADER_KEY;
 
   if (callingPath === 'api/books') {
     return next();
   }
 
-  if (!correctHeaders) {
+  if (!correctHeader) {
     return res.status(401).json({
       message: 'Unauthorized access',
       code: 401
