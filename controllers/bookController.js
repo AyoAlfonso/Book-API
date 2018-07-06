@@ -25,8 +25,8 @@ exports.findBook = async (req, res) => {
         books: book,
       });
     }
-    return res.status(304).json({
-      code: 304,
+    return res.status(200).json({
+      code: 200,
       message: 'Book wasnt found',
     });
   } catch (err) {

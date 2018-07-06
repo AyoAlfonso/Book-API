@@ -8,7 +8,7 @@ router.use('/', (req, res, next) => {
   const callingPath = req.path;
   const correctHeader = req.get('api_key') == process.env.REQUEST_HEADER_KEY;
 
-  if (callingPath === 'api/books') {
+  if (callingPath === '/api/books' || '/api/find') {
     return next();
   }
 
@@ -21,6 +21,10 @@ router.use('/', (req, res, next) => {
   return next();
 });
 
+
+/* This middleware authenticates the format of geopints
+  we are giving a bookstore for storing the locatiojn
+ */
 router.use('/newBookshop', (req, res, next) => {
   const geopoint = JSON.parse(req.body.geopoints);
   const isArray = Array.isArray(geopoint);
