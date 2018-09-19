@@ -5,5 +5,7 @@ node_js:
 branches:
   only:
   - master
-install:
-  - yarn
+before_script:
+  - npm install
+script:
+  - npm start
