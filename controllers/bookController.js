@@ -91,6 +91,8 @@ exports.listBooks = async (req, res) => {
       }
     });
 
+    
+
     books = books.filter((book) => {
       if (book.reviewAverage >= rating) {
         return book;

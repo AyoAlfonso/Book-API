@@ -10,18 +10,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 /*
-Confirms every http request to our API is forced into an https connection when we are in PRODUCTION
-*/
-// app.use('*', (req, res, next) => {
-//   const status = 302;
-//   if (req.headers['x-forwarded-proto'] != 'https' && process.env.NODE_ENV === 'production') {
-//     res.redirect(status, `https://' + ${req.hostname} + ${req.originalUrl}`);
-//   } else {
-//     next();
-//   }
-// });
-
-/*
 Added a security measure; For headers we are accpeting and the type of site origins we are accepting
 */
 app.use((req, res, next) => {
